@@ -75,7 +75,14 @@ public class PlayerMovement : MonoBehaviour
         // Player Fronting And Animation Logic
         if (Input.GetButtonDown("Horizontal") || h != 0) {
             IsMoving = true;
-            Model.flipX = h == -1;
+            if (h == -1) {
+                Model.flipX = true;
+            }
+
+            else if (h == 1) {
+                Model.flipX = false;
+            }
+            
             anim.SetBool("IsRunning", true);  // Setting Parameter Value is true.
         }
 
@@ -85,8 +92,10 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Player Jumping Logic
-        if (Input.GetButtonDown("Jump") && IsLanding) {
+        if (IsLanding && Input.GetButtonDown("Jump"))  // 땅에 있을 때 점프 버튼을 누르면
+        {
             Jump = true;  // 점프를 누름
+            anim.SetBool("IsJumping", true);
         }
     }
 
@@ -94,6 +103,7 @@ public class PlayerMovement : MonoBehaviour
     void OnCollisionEnter2D(Collision2D other) {
         if (other.gameObject.tag == "Platform") {
             IsLanding = true;
+            anim.SetBool("IsJumping", false);
         }
     }
 
