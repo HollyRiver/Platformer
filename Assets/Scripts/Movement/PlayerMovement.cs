@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour
     Rigidbody2D rigid;
     SpriteRenderer Model;
     Animator anim;
+    BoxCollider2D PlayerHitBox;
     // bool IsLanding;  // true : 착지 중, false : 떠있음 >> 필요없음, anim.GetBool("IsJumping")으로 대체 가능.
     bool Jump;  // true : 점프 키 누름, false : 점프 키 누르지 않음
     float h;
@@ -24,6 +25,7 @@ public class PlayerMovement : MonoBehaviour
         rigid = GetComponent<Rigidbody2D>();
         Model = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
+        PlayerHitBox = GetComponent<BoxCollider2D>();
         Jump = false;
         IsMoving = false;
     }
@@ -71,17 +73,35 @@ public class PlayerMovement : MonoBehaviour
         // Debug.DrawRay(rigid.position, Vector3.down,new Color32(0, 255, 0, 100));  // 디버그 씬에서 개체 중앙을 기준으로 선을 쏨
 
         if (rigid.velocity.y < 0) {
-            RaycastHit2D RayHitLeftDiag = Physics2D.Raycast(rigid.position, new Vector3(-0.794f, -1, 0), 1, LayerMask.GetMask("Platform"));  // 레이캐스트 생성, 물리에서 적용됨.
-            RaycastHit2D RayHitDown = Physics2D.Raycast(rigid.position, Vector3.down, 1, LayerMask.GetMask("Platform"));
-            RaycastHit2D RayHitRightDiag = Physics2D.Raycast(rigid.position, new Vector3(0.666f, -1, 0), 1, LayerMask.GetMask("Platform"));
+            anim.SetBool("IsFalling", true);  // 낙하중임을 명시함
 
-            anim.SetBool("IsFalling", true);
+            // 왼쪽을 보고 있을 때
+            if (Model.flipX) {
+                RaycastHit2D RayHitRightDiag = Physics2D.Raycast(rigid.position, new Vector3(-0.794f, -1, 0), 1, LayerMask.GetMask("Platform"));  // 레이캐스트 생성, 물리에서 적용됨.
+                RaycastHit2D RayHitDown = Physics2D.Raycast(rigid.position, Vector3.down, 1, LayerMask.GetMask("Platform"));
+                RaycastHit2D RayHitLeftDiag = Physics2D.Raycast(rigid.position, new Vector3(0.666f, -1, 0), 1, LayerMask.GetMask("Platform"));
+
+                if (RayHitDown.collider != null || RayHitLeftDiag.collider != null || RayHitRightDiag.collider != null)  // 레이가 물리 개체를 만났을 때
+                {
+                    if (RayHitDown.distance <= 0.5f || RayHitLeftDiag.distance <= 0.639f || RayHitRightDiag.distance <= 0.601f) {
+                        anim.SetBool("IsJumping", false);
+                        anim.SetBool("IsFalling", false);
+                    }
+                }
+            }
             
-            if (RayHitDown.collider != null || RayHitLeftDiag.collider != null || RayHitRightDiag.collider != null)  // 레이가 물리 개체를 만났을 때
-            {
-                if (RayHitDown.distance <= 0.5f || RayHitLeftDiag.distance <= 0.639f || RayHitRightDiag.distance <= 0.601f) {
-                    anim.SetBool("IsJumping", false);
-                    anim.SetBool("IsFalling", false);
+            // 오른쪽을 보고 있을 때
+            else {
+                RaycastHit2D RayHitLeftDiag = Physics2D.Raycast(rigid.position, new Vector3(-0.794f, -1, 0), 1, LayerMask.GetMask("Platform"));  // 레이캐스트 생성, 물리에서 적용됨.
+                RaycastHit2D RayHitDown = Physics2D.Raycast(rigid.position, Vector3.down, 1, LayerMask.GetMask("Platform"));
+                RaycastHit2D RayHitRightDiag = Physics2D.Raycast(rigid.position, new Vector3(0.666f, -1, 0), 1, LayerMask.GetMask("Platform"));
+
+                if (RayHitDown.collider != null || RayHitLeftDiag.collider != null || RayHitRightDiag.collider != null)  // 레이가 물리 개체를 만났을 때
+                {
+                    if (RayHitDown.distance <= 0.5f || RayHitLeftDiag.distance <= 0.639f || RayHitRightDiag.distance <= 0.601f) {
+                        anim.SetBool("IsJumping", false);
+                        anim.SetBool("IsFalling", false);
+                    }
                 }
             }
         }
@@ -94,10 +114,12 @@ public class PlayerMovement : MonoBehaviour
             IsMoving = true;
             if (h == -1) {
                 Model.flipX = true;
+                PlayerHitBox.offset = new Vector2(0.032f, 0);
             }
 
             else if (h == 1) {
                 Model.flipX = false;
+                PlayerHitBox.offset = new Vector2(-0.032f, 0);
             }
             
             anim.SetBool("IsRunning", true);  // Setting Parameter Value is true.
