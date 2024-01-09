@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 124656798}
   m_Layer: 0
   m_Name: Middle (10)
-  m_TagString: Platform
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -216,7 +216,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 355986475}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Platforms
   m_TagString: Platform
   m_Icon: {fileID: 0}
@@ -269,7 +269,7 @@ GameObject:
   - component: {fileID: 374278349}
   m_Layer: 0
   m_Name: Middle (7)
-  m_TagString: Platform
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -437,7 +437,7 @@ GameObject:
   - component: {fileID: 489782207}
   m_Layer: 0
   m_Name: LeftEdge
-  m_TagString: Platform
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -656,7 +656,7 @@ GameObject:
   m_Component:
   - component: {fileID: 616455869}
   - component: {fileID: 616455870}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Surface
   m_TagString: Platform
   m_Icon: {fileID: 0}
@@ -817,7 +817,7 @@ GameObject:
   - component: {fileID: 626184303}
   m_Layer: 0
   m_Name: Middle (13)
-  m_TagString: Platform
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -901,7 +901,7 @@ GameObject:
   - component: {fileID: 796683432}
   m_Layer: 0
   m_Name: Middle (3)
-  m_TagString: Platform
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -985,7 +985,7 @@ GameObject:
   - component: {fileID: 803873250}
   m_Layer: 0
   m_Name: Middle (12)
-  m_TagString: Platform
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1069,7 +1069,7 @@ GameObject:
   - component: {fileID: 873231782}
   m_Layer: 0
   m_Name: Middle (9)
-  m_TagString: Platform
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1153,7 +1153,7 @@ GameObject:
   - component: {fileID: 918848679}
   m_Layer: 0
   m_Name: Middle (5)
-  m_TagString: Platform
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1237,7 +1237,7 @@ GameObject:
   - component: {fileID: 1092304160}
   m_Layer: 0
   m_Name: Middle (4)
-  m_TagString: Platform
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1321,7 +1321,7 @@ GameObject:
   - component: {fileID: 1243064294}
   m_Layer: 0
   m_Name: Middle (8)
-  m_TagString: Platform
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1405,7 +1405,7 @@ GameObject:
   - component: {fileID: 1255332561}
   m_Layer: 0
   m_Name: Middle (11)
-  m_TagString: Platform
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1489,7 +1489,7 @@ GameObject:
   - component: {fileID: 1336673015}
   m_Layer: 0
   m_Name: Middle (1)
-  m_TagString: Platform
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1571,9 +1571,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1347379671}
   - component: {fileID: 1347379672}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Volumn
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1652,7 +1652,7 @@ GameObject:
   - component: {fileID: 1547240440}
   - component: {fileID: 1547240439}
   - component: {fileID: 1547240443}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -1845,7 +1845,7 @@ GameObject:
   - component: {fileID: 1574917193}
   m_Layer: 0
   m_Name: Middle (2)
-  m_TagString: Platform
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1929,7 +1929,7 @@ GameObject:
   - component: {fileID: 1639087204}
   m_Layer: 0
   m_Name: Middle (6)
-  m_TagString: Platform
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2013,7 +2013,7 @@ GameObject:
   - component: {fileID: 1719870086}
   m_Layer: 0
   m_Name: Middle
-  m_TagString: Platform
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2097,7 +2097,7 @@ GameObject:
   - component: {fileID: 1774491305}
   m_Layer: 0
   m_Name: Middle (14)
-  m_TagString: Platform
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2181,7 +2181,7 @@ GameObject:
   - component: {fileID: 1861362509}
   m_Layer: 0
   m_Name: RightEdge
-  m_TagString: Platform
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
