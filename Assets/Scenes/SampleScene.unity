@@ -159,11 +159,122 @@ TilemapCollider2D:
     m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_UsedByComposite: 0
+  m_UsedByComposite: 1
   m_Offset: {x: 0, y: 0}
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0
   m_UseDelaunayMesh: 0
+--- !u!66 &62859106
+CompositeCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 62859100}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 6200000, guid: 6636d43474f694948a55b15c0cc71757, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_GeometryType: 0
+  m_GenerationType: 0
+  m_EdgeRadius: 0
+  m_ColliderPaths:
+  - m_Collider: {fileID: 62859104}
+    m_ColliderPaths:
+    - - X: 110000000
+        Y: 20000000
+      - X: 80000000
+        Y: 20000000
+      - X: 80000000
+        Y: -30000000
+      - X: -60000000
+        Y: -30000000
+      - X: -90000000
+        Y: 0
+      - X: -120000000
+        Y: -30000000
+      - X: -130000000
+        Y: -30000000
+      - X: -130000000
+        Y: -60000000
+      - X: 110000000
+        Y: -60000000
+    - - X: 60000000
+        Y: 0
+      - X: -50000000
+        Y: 0
+      - X: -50000000
+        Y: -10000000
+      - X: 60000000
+        Y: -10000000
+  m_CompositePaths:
+    m_Paths:
+    - - {x: 10.99997, y: -6}
+      - {x: 10.99997, y: 2}
+      - {x: 8, y: 1.9999708}
+      - {x: 7.9999704, y: -3}
+      - {x: -6.000007, y: -2.9999924}
+      - {x: -9.000021, y: -0.0000207}
+      - {x: -12.000011, y: -3}
+      - {x: -13, y: -3.0000293}
+      - {x: -12.99997, y: -6}
+    - - {x: 5.999971, y: -1}
+      - {x: 5.999971, y: 0}
+      - {x: -5, y: -0.000029300001}
+      - {x: -4.999971, y: -1}
+  m_VertexDistance: 0.0005
+  m_OffsetDistance: 0.00005
+  m_UseDelaunayMesh: 0
+  m_CompositeGameObject: {fileID: 62859100}
+--- !u!50 &62859107
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 62859100}
+  m_BodyType: 2
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 6200000, guid: 6636d43474f694948a55b15c0cc71757, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &381831465
 GameObject:
   m_ObjectHideFlags: 0
@@ -558,8 +669,8 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.73, y: 1}
-  m_EdgeRadius: 0
+  m_Size: {x: 0.54, y: 0.84}
+  m_EdgeRadius: 0.08
 --- !u!212 &1547240441
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3610,6 +3721,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8027909385754788471, guid: d7e94d21642de0442baa2e20e99bcc86, type: 3}
       insertIndex: -1
       addedObject: {fileID: 62859104}
+    - targetCorrespondingSourceObject: {fileID: 8027909385754788471, guid: d7e94d21642de0442baa2e20e99bcc86, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 62859107}
+    - targetCorrespondingSourceObject: {fileID: 8027909385754788471, guid: d7e94d21642de0442baa2e20e99bcc86, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 62859106}
   m_SourcePrefab: {fileID: 100100000, guid: d7e94d21642de0442baa2e20e99bcc86, type: 3}
 --- !u!1 &2090340290
 GameObject:
