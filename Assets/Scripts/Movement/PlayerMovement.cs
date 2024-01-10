@@ -71,15 +71,18 @@ public class PlayerMovement : MonoBehaviour
 
         // Landing Platform by RayCast
         // Debug.DrawRay(rigid.position, Vector3.down,new Color32(0, 255, 0, 100));  // 디버그 씬에서 개체 중앙을 기준으로 선을 쏨
+        Debug.DrawRay(rigid.position, new Vector3(0.7f, -1, 0), Color.green);
 
         if (rigid.velocity.y < 0) {
             anim.SetBool("IsFalling", true);  // 낙하중임을 명시함
 
             // 왼쪽을 보고 있을 때
             if (Model.flipX) {
-                RaycastHit2D RayHitRightDiag = Physics2D.Raycast(rigid.position, new Vector3(-0.794f, -1, 0), 1, LayerMask.GetMask("Platform"));  // 레이캐스트 생성, 물리에서 적용됨.
+                RaycastHit2D RayHitRightDiag = Physics2D.Raycast(rigid.position, new Vector3(0.794f, -1, 0), 1, LayerMask.GetMask("Platform"));  // 레이캐스트 생성, 물리에서 적용됨.
                 RaycastHit2D RayHitDown = Physics2D.Raycast(rigid.position, Vector3.down, 1, LayerMask.GetMask("Platform"));
-                RaycastHit2D RayHitLeftDiag = Physics2D.Raycast(rigid.position, new Vector3(0.666f, -1, 0), 1, LayerMask.GetMask("Platform"));
+                RaycastHit2D RayHitLeftDiag = Physics2D.Raycast(rigid.position, new Vector3(-0.666f, -1, 0), 1, LayerMask.GetMask("Platform"));
+
+                RaycastHit2D RayHitLeft = Physics2D.Raycast(rigid.position, new Vector3(-0.7f, -1, 0), 1, LayerMask.GetMask("Platform"));  // 벽에 접촉했는지 여부 확인
 
                 if (RayHitDown.collider != null || RayHitLeftDiag.collider != null || RayHitRightDiag.collider != null)  // 레이가 물리 개체를 만났을 때
                 {
@@ -96,6 +99,9 @@ public class PlayerMovement : MonoBehaviour
                 RaycastHit2D RayHitDown = Physics2D.Raycast(rigid.position, Vector3.down, 1, LayerMask.GetMask("Platform"));
                 RaycastHit2D RayHitRightDiag = Physics2D.Raycast(rigid.position, new Vector3(0.666f, -1, 0), 1, LayerMask.GetMask("Platform"));
 
+                RaycastHit2D RayHitRight = Physics2D.Raycast(rigid.position, new Vector3(0.7f, -1, 0), 1, LayerMask.GetMask("Platform"));  // 벽에 접촉했는지 여부 확인
+
+                RayHitRight.distance <= 0.6f
                 if (RayHitDown.collider != null || RayHitLeftDiag.collider != null || RayHitRightDiag.collider != null)  // 레이가 물리 개체를 만났을 때
                 {
                     if (RayHitDown.distance <= 0.5f || RayHitLeftDiag.distance <= 0.639f || RayHitRightDiag.distance <= 0.601f) {
