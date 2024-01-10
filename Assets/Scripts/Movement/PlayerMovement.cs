@@ -78,15 +78,21 @@ public class PlayerMovement : MonoBehaviour
 
             // 왼쪽을 보고 있을 때
             if (Model.flipX) {
+<<<<<<< HEAD
                 RaycastHit2D RayHitRightDiag = Physics2D.Raycast(rigid.position, new Vector3(0.794f, -1, 0), 1, LayerMask.GetMask("Platform"));  // 레이캐스트 생성, 물리에서 적용됨.
                 RaycastHit2D RayHitDown = Physics2D.Raycast(rigid.position, Vector3.down, 1, LayerMask.GetMask("Platform"));
                 RaycastHit2D RayHitLeftDiag = Physics2D.Raycast(rigid.position, new Vector3(-0.666f, -1, 0), 1, LayerMask.GetMask("Platform"));
 
                 RaycastHit2D RayHitLeft = Physics2D.Raycast(rigid.position, new Vector3(-0.7f, -1, 0), 1, LayerMask.GetMask("Platform"));  // 벽에 접촉했는지 여부 확인
+=======
+                RaycastHit2D RayHitRightDiag = Physics2D.Raycast(rigid.position, new Vector3(0.664f, -1, 0), 0.601f, LayerMask.GetMask("Platform"));  // 레이캐스트 생성, 물리에서 적용됨.
+                RaycastHit2D RayHitDown = Physics2D.Raycast(rigid.position, Vector3.down, 0.5f, LayerMask.GetMask("Platform"));
+                RaycastHit2D RayHitLeftDiag = Physics2D.Raycast(rigid.position, new Vector3(-0.536f, -1, 0), 0.568f, LayerMask.GetMask("Platform"));
+>>>>>>> afcceb094f386fc1345968f1e4754ad00f985cef
 
                 if (RayHitDown.collider != null || RayHitLeftDiag.collider != null || RayHitRightDiag.collider != null)  // 레이가 물리 개체를 만났을 때
                 {
-                    if (RayHitDown.distance <= 0.5f || RayHitLeftDiag.distance <= 0.639f || RayHitRightDiag.distance <= 0.601f) {
+                    if (RayHitDown.distance <= 0.5f || RayHitLeftDiag.distance <= 0.601f || RayHitRightDiag.distance <= 0.568f) {
                         anim.SetBool("IsJumping", false);
                         anim.SetBool("IsFalling", false);
                     }
@@ -95,16 +101,16 @@ public class PlayerMovement : MonoBehaviour
             
             // 오른쪽을 보고 있을 때
             else {
-                RaycastHit2D RayHitLeftDiag = Physics2D.Raycast(rigid.position, new Vector3(-0.794f, -1, 0), 1, LayerMask.GetMask("Platform"));  // 레이캐스트 생성, 물리에서 적용됨.
-                RaycastHit2D RayHitDown = Physics2D.Raycast(rigid.position, Vector3.down, 1, LayerMask.GetMask("Platform"));
-                RaycastHit2D RayHitRightDiag = Physics2D.Raycast(rigid.position, new Vector3(0.666f, -1, 0), 1, LayerMask.GetMask("Platform"));
+                RaycastHit2D RayHitLeftDiag = Physics2D.Raycast(rigid.position, new Vector3(-0.664f, -1, 0), 0.601f, LayerMask.GetMask("Platform"));  // 레이캐스트 생성, 물리에서 적용됨.
+                RaycastHit2D RayHitDown = Physics2D.Raycast(rigid.position, Vector3.down, 0.5f, LayerMask.GetMask("Platform"));
+                RaycastHit2D RayHitRightDiag = Physics2D.Raycast(rigid.position, new Vector3(0.536f, -1, 0), 0.568f, LayerMask.GetMask("Platform"));
 
                 RaycastHit2D RayHitRight = Physics2D.Raycast(rigid.position, new Vector3(0.7f, -1, 0), 1, LayerMask.GetMask("Platform"));  // 벽에 접촉했는지 여부 확인
 
                 RayHitRight.distance <= 0.6f
                 if (RayHitDown.collider != null || RayHitLeftDiag.collider != null || RayHitRightDiag.collider != null)  // 레이가 물리 개체를 만났을 때
                 {
-                    if (RayHitDown.distance <= 0.5f || RayHitLeftDiag.distance <= 0.639f || RayHitRightDiag.distance <= 0.601f) {
+                    if (RayHitDown.distance <= 0.5f || RayHitLeftDiag.distance <= 0.601f || RayHitRightDiag.distance <= 0.568f) {
                         anim.SetBool("IsJumping", false);
                         anim.SetBool("IsFalling", false);
                     }
