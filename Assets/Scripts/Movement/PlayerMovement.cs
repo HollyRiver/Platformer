@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -18,8 +20,9 @@ public class PlayerMovement : MonoBehaviour
     bool Jump;  // true : 점프 키 누름, false : 점프 키 누르지 않음
     float h;
     bool IsMoving;
+    int dirc;
 
-    void Start()
+    void Awake()
     {
         // Local Variables and Component Setting
         rigid = GetComponent<Rigidbody2D>();
@@ -53,10 +56,13 @@ public class PlayerMovement : MonoBehaviour
             rigid.velocity = new Vector2(RunSpeed * (-1), rigid.velocity.y);
         }
 
-        // Player Stop Logic
-        if (!IsMoving) {
-            rigid.velocity = new Vector2(rigid.velocity.x * 0.6f, rigid.velocity.y);
-        }
+        
+        // // Player Stop Logic : 해당 로직 때문에 피격 시 밀리는 부분에서 문제가 생김.
+        // Debug.Log(anim.GetCurrentAnimatorStateInfo(0).IsName("Damaged"));
+
+        // if (!IsMoving && !anim.GetCurrentAnimatorStateInfo(0).IsName("IsDamaged")) {
+        //     rigid.velocity = new Vector2(rigid.velocity.x * 0.6f, rigid.velocity.y);
+        // }
 
         // Showing Animation Logic
         // if (Mathf.Abs(rigid.velocity.x) < 0.3f) {
@@ -151,4 +157,40 @@ public class PlayerMovement : MonoBehaviour
     //         IsLanding = false;
     //     }
     // }
+
+    void OnCollisionEnter2D(Collision2D other) {
+        if (other.gameObject.tag == "Enemy") {
+            gameObject.layer = 10;
+            anim.SetBool("IsDamaged", true);
+            anim.SetBool("IsJumping", false);
+            anim.SetBool("IsRunning", false);
+            anim.SetBool("IsFalling", true);
+            OnDamaged();
+            PushedOut(other.transform.position);
+        }
+    }
+
+    void OnDamaged() {
+        Model.color = new Color32(255, 255, 255, 100);
+        Invoke("OnDamaged2", 0.2f);
+    }
+
+    void OnDamaged2() {
+        Model.color = new Color32(255, 255, 255, 200);
+        Invoke("OnDamaged", 0.2f);
+    }
+
+    void PushedOut(Vector2 EnemyPosition) {
+        if (transform.position.x - EnemyPosition.x > 0) {
+            dirc = 1;
+            Model.flipX = true;
+        }
+
+        else {
+            dirc = -1;
+            Model.flipX = false;
+        }
+
+        rigid.AddForce(new Vector2(dirc, 1) * 7, ForceMode2D.Impulse);
+    }
 }
