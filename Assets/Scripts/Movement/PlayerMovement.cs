@@ -39,7 +39,8 @@ public class PlayerMovement : MonoBehaviour
         h = Input.GetAxisRaw("Horizontal");
 
         if (Jump) {
-            rigid.AddForce(new Vector2(h, JumpPower), ForceMode2D.Impulse);
+            rigid.AddForce(Vector2.right * h, ForceMode2D.Impulse);
+            rigid.velocity = new Vector2(rigid.velocity.x, JumpPower);  // AddForce로 할 경우 경사로에서 비정상적인 점프 발생
             Jump = false;
         }
 
@@ -57,12 +58,12 @@ public class PlayerMovement : MonoBehaviour
         }
 
         
-        // // Player Stop Logic : 해당 로직 때문에 피격 시 밀리는 부분에서 문제가 생김.
-        // Debug.Log(anim.GetCurrentAnimatorStateInfo(0).IsName("Damaged"));
+        // Player Stop Logic : 해당 로직 때문에 피격 시 밀리는 부분에서 문제가 생김.
 
-        // if (!IsMoving && !anim.GetCurrentAnimatorStateInfo(0).IsName("IsDamaged")) {
-        //     rigid.velocity = new Vector2(rigid.velocity.x * 0.6f, rigid.velocity.y);
-        // }
+        if (!IsMoving && !anim.GetBool("IsDamaged")) {
+            rigid.velocity = new Vector2(rigid.velocity.x * 0.6f, rigid.velocity.y);
+        }
+
 
         // Showing Animation Logic
         // if (Mathf.Abs(rigid.velocity.x) < 0.3f) {
@@ -92,6 +93,10 @@ public class PlayerMovement : MonoBehaviour
                     if (RayHitDown.distance <= 0.5f || RayHitLeftDiag.distance <= 0.601f || RayHitRightDiag.distance <= 0.568f) {
                         anim.SetBool("IsJumping", false);
                         anim.SetBool("IsFalling", false);
+
+                        if (anim.GetCurrentAnimatorStateInfo(0).IsName("Damaged")) {
+                            anim.SetBool("DamagedBlock", true);
+                        }
                     }
                 }
             }
@@ -107,6 +112,10 @@ public class PlayerMovement : MonoBehaviour
                     if (RayHitDown.distance <= 0.5f || RayHitLeftDiag.distance <= 0.601f || RayHitRightDiag.distance <= 0.568f) {
                         anim.SetBool("IsJumping", false);
                         anim.SetBool("IsFalling", false);
+
+                        if (anim.GetCurrentAnimatorStateInfo(0).IsName("Damaged")) {
+                            anim.SetBool("DamagedBlock", true);
+                        }
                     }
                 }
             }
@@ -165,8 +174,10 @@ public class PlayerMovement : MonoBehaviour
             anim.SetBool("IsJumping", false);
             anim.SetBool("IsRunning", false);
             anim.SetBool("IsFalling", true);
+            anim.SetBool("DamagedBlock", false);
             OnDamaged();
             PushedOut(other.transform.position);
+            Invoke("OffDamaged", 2);
         }
     }
 
@@ -191,6 +202,15 @@ public class PlayerMovement : MonoBehaviour
             Model.flipX = false;
         }
 
-        rigid.AddForce(new Vector2(dirc, 1) * 7, ForceMode2D.Impulse);
+        rigid.velocity = new Vector2(dirc, 1) * 7;
+        // rigid.AddForce(new Vector2(dirc, 1) * 7, ForceMode2D.Impulse);
+    }
+
+    void OffDamaged() {
+        gameObject.layer = 9;
+        Model.color = new Color32(255, 255, 255, 255);
+        anim.SetBool("IsDamaged", false);
+        anim.SetBool("DamagedBlock", false);
+        CancelInvoke();
     }
 }
