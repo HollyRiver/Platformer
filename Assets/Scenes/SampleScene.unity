@@ -2063,6 +2063,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RunSpeed: 5
   JumpPower: 10
+  mat:
+  - {fileID: 6200000, guid: 6636d43474f694948a55b15c0cc71757, type: 2}
+  - {fileID: 6200000, guid: 3f69b3c51908a3d45b74dfef663f00e9, type: 2}
+  - {fileID: 6200000, guid: 91eb279862fdb274baa5afa706427404, type: 2}
 --- !u!61 &1547240445
 BoxCollider2D:
   m_ObjectHideFlags: 0
