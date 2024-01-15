@@ -3,13 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Timeline;
 using UnityEngine.UIElements;
 
 public class PlayerMovement : MonoBehaviour
 {
+    /*
+    피격 애니메이션 적용을 복잡하게 꼬아놓은 상태, 추후 코드 참고 시 Any State와 Trigger를 이용할 것.
+    tlqkf 코드 존나 꼬아놨네, 적당히 최적화해서 쓸 수 있도록 할 것...
+    */
+
     // Global Variables
     public float RunSpeed;
     public float JumpPower;
+    public bool PlayerInSlope;
     public PhysicsMaterial2D[] mat = new PhysicsMaterial2D[3];
 
     // Local Variables
@@ -17,16 +24,23 @@ public class PlayerMovement : MonoBehaviour
     SpriteRenderer Model;
     Animator anim;
     BoxCollider2D PlayerHitBox;
+
     // bool IsLanding;  // true : 착지 중, false : 떠있음 >> 필요없음, anim.GetBool("IsJumping")으로 대체 가능.
     bool Jump;  // true : 점프 키 누름, false : 점프 키 누르지 않음
     float h;
     bool IsMoving;
     bool CantMoving;
     int dirc;
+    float RightRayAngle;
+    float LeftRayAngle;
+
+    // Other Class Import
+    Platform plat;
 
     void Awake()
     {
         // Local Variables and Component Setting
+        plat = FindObjectOfType<Platform>();
         rigid = GetComponent<Rigidbody2D>();
         Model = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
@@ -34,20 +48,22 @@ public class PlayerMovement : MonoBehaviour
         Jump = false;
         IsMoving = false;
         CantMoving = false;
+        PlayerInSlope = false;
     }
 
     void FixedUpdate()
     {   
         // 플레이어가 피격후 모션이 완료되기 전까지는 아래 로직이 작동하지 않음
-        if (!CantMoving) 
+        if (!CantMoving)
         {
-            
             // Player Movement and Jumping Logic
             h = Input.GetAxisRaw("Horizontal");
 
             if (Jump) {
                 rigid.AddForce(Vector2.right * h, ForceMode2D.Impulse);
-                rigid.velocity = new Vector2(rigid.velocity.x, JumpPower);  // AddForce로 할 경우 경사로에서 비정상적인 점프 발생
+                rigid.velocity = new Vector2(rigid.velocity.x, 0);  // 가속도 초기화
+                rigid.AddForce(new Vector2(0, JumpPower), ForceMode2D.Impulse);  // 점프 발생
+                PlayerInSlope = false;
                 Jump = false;
             }
 
@@ -65,9 +81,8 @@ public class PlayerMovement : MonoBehaviour
             }
 
             
-            // Player Stop Logic : 해당 로직 때문에 피격 시 밀리는 부분에서 문제가 생김.
-
-            if (!IsMoving && !anim.GetBool("IsDamaged")) {
+            // Player Stop Logic
+            if (!IsMoving && !CantMoving) {
                 rigid.velocity = new Vector2(rigid.velocity.x * 0.6f, rigid.velocity.y);
             }
 
@@ -86,8 +101,11 @@ public class PlayerMovement : MonoBehaviour
             // Landing Platform by RayCast
             // Debug.DrawRay(rigid.position, Vector3.down,new Color32(0, 255, 0, 100));  // 디버그 씬에서 개체 중앙을 기준으로 선을 쏨
 
-            if (rigid.velocity.y < 0) {
-                anim.SetBool("IsFalling", true);  // 낙하중임을 명시함
+            if (rigid.velocity.y != 0 || PlayerInSlope) {
+                // Falling Animation
+                if (rigid.velocity.y < 0) {
+                    anim.SetBool("IsFalling", true);
+                }
 
                 // 왼쪽을 보고 있을 때
                 if (Model.flipX) {
@@ -97,14 +115,35 @@ public class PlayerMovement : MonoBehaviour
 
                     if (RayHitDown.collider != null || RayHitLeftDiag.collider != null || RayHitRightDiag.collider != null)  // 레이가 물리 개체를 만났을 때
                     {
-                        if (RayHitDown.distance <= 0.5f || RayHitLeftDiag.distance <= 0.601f || RayHitRightDiag.distance <= 0.568f) {
+                        if ((rigid.velocity.y <= 0) && (RayHitDown.distance <= 0.5f || RayHitLeftDiag.distance <= 0.601f || RayHitRightDiag.distance <= 0.568f)) {
                             anim.SetBool("IsJumping", false);
                             anim.SetBool("IsFalling", false);
-
-                            if (anim.GetCurrentAnimatorStateInfo(0).IsName("Damaged")) {
-                                anim.SetBool("DamagedBlock", true);
-                            }
                         }
+                    }
+
+                    // 경사로 인식 로직
+                    if (RayHitRightDiag.collider != null || RayHitLeftDiag.collider != null) {
+                        RightRayAngle = Vector3.Angle(RayHitRightDiag.normal, new Vector3(0.664f, -1, 0));
+                        LeftRayAngle = Vector3.Angle(RayHitLeftDiag.normal, new Vector3(-0.536f, -1, 0));
+
+                        // Debug.DrawRay(rigid.position, new Vector3(0.664f, -1, 0));
+                        // Debug.DrawRay(rigid.position, new Vector3(-0.536f, -1, 0));
+                        
+                        if (RayHitRightDiag.collider != null && RightRayAngle >= 155) {
+                            // Debug.DrawRay(RayHitRightDiag.point, RayHitRightDiag.normal);
+                            Debug.Log(RightRayAngle);
+                            PlayerInSlope = true;
+                        }
+
+                        else if (RayHitLeftDiag.collider != null && LeftRayAngle >= 155) {
+                            // Debug.DrawRay(RayHitLeftDiag.point, RayHitLeftDiag.normal);
+                            Debug.Log(LeftRayAngle);
+                            PlayerInSlope = true;
+                        }
+                    }
+
+                    else {
+                        PlayerInSlope = false;
                     }
                 }
                 
@@ -114,18 +153,41 @@ public class PlayerMovement : MonoBehaviour
                     RaycastHit2D RayHitDown = Physics2D.Raycast(rigid.position, Vector3.down, 0.5f, LayerMask.GetMask("Platform"));
                     RaycastHit2D RayHitRightDiag = Physics2D.Raycast(rigid.position, new Vector3(0.536f, -1, 0), 0.568f, LayerMask.GetMask("Platform"));
 
+                    // 애니메이션 비활성화...?
                     if (RayHitDown.collider != null || RayHitLeftDiag.collider != null || RayHitRightDiag.collider != null)  // 레이가 물리 개체를 만났을 때
                     {
-                        if (RayHitDown.distance <= 0.5f || RayHitLeftDiag.distance <= 0.601f || RayHitRightDiag.distance <= 0.568f) {
+                        if ((rigid.velocity.y <= 0) && (RayHitDown.distance <= 0.5f || RayHitLeftDiag.distance <= 0.601f || RayHitRightDiag.distance <= 0.568f)) {
                             anim.SetBool("IsJumping", false);
                             anim.SetBool("IsFalling", false);
-
-                            if (anim.GetCurrentAnimatorStateInfo(0).IsName("Damaged")) {
-                                anim.SetBool("DamagedBlock", true);
-                            }
                         }
                     }
+
+                    if (RayHitRightDiag.collider != null || RayHitLeftDiag.collider != null) {
+                        RightRayAngle = Vector3.Angle(RayHitRightDiag.normal, new Vector3(0.536f, -1, 0));
+                        LeftRayAngle = Vector3.Angle(RayHitLeftDiag.normal, new Vector3(-0.664f, -1, 0));
+
+                        Debug.DrawRay(rigid.position, new Vector3(-0.664f, -1, 0));
+                        Debug.DrawRay(rigid.position, new Vector3(0.536f, -1, 0));
+
+                        if ((RayHitRightDiag.collider != null && RightRayAngle >= 155) || (RayHitLeftDiag.collider != null && LeftRayAngle >= 155)) {
+                            PlayerInSlope = true;
+                        }
+                    }
+                    
+                    else {
+                        PlayerInSlope = false;
+                    }
                 }
+            }
+            
+            if (PlayerInSlope && !CantMoving && !IsMoving) {
+                rigid.sharedMaterial = mat[2];
+                plat.InSlope();
+            }
+
+            else {
+                rigid.sharedMaterial = mat[0];
+                plat.OutSlope();
             }
         }
     }
@@ -180,19 +242,35 @@ public class PlayerMovement : MonoBehaviour
     // }
 
     void OnCollisionEnter2D(Collision2D other) {
-        if (other.gameObject.tag == "Enemy") {
-            gameObject.layer = 10;
-            anim.SetBool("IsDamaged", true);
-            anim.SetBool("IsJumping", false);
-            anim.SetBool("IsRunning", false);
-            anim.SetBool("IsFalling", true);
-            anim.SetBool("DamagedBlock", false);
-            OnDamaged();
-            CantMove();
-            PushedOut(other.transform.position);
-            Invoke("OffDamaged", 2);
-            Invoke("CanMove", 1);
+        if (other.gameObject.CompareTag("Enemy") || other.gameObject.CompareTag("Trap")) {
+            if (other.gameObject.CompareTag("Enemy") && transform.position.y > other.transform.position.y + 0.4f) {
+                OnAttack(other.transform, transform.position.x);  // 트랜스폼에서 컴포넌트를 추출할 수 있음...?
+            }
+            
+            else {
+                gameObject.layer = 10;
+                anim.SetTrigger("Damaged");
+                OnDamaged();
+                CantMove();
+                PushedOut(other.transform.position);
+                Invoke("OffDamaged", 2);
+                Invoke("CanMove", 1);
+            }
         }
+    }
+
+    void OnAttack(Transform enemy, float PlayerPointX) {
+        EnemyMovement enemyMove = enemy.GetComponent<EnemyMovement>();
+        enemyMove.OnDamaged(PlayerPointX);
+        anim.SetBool("IsFalling", false);
+        anim.SetBool("IsJumping", false);  // 다시 점프가 가능함
+        Invoke("JumpBlock", 0.05f);
+        rigid.AddForce(Vector2.up*2, ForceMode2D.Impulse);
+    }
+
+    void JumpBlock() {
+        if (anim.GetBool("IsJumping"))
+            anim.SetBool("IsFalling", true);
     }
 
     void OnDamaged() {
@@ -213,8 +291,6 @@ public class PlayerMovement : MonoBehaviour
     void CanMove() {
         PlayerHitBox.sharedMaterial = mat[0];
         CantMoving = false;
-        anim.SetBool("IsDamaged", false);
-        anim.SetBool("DamagedBlock", false);
     }
 
     void PushedOut(Vector2 EnemyPosition) {

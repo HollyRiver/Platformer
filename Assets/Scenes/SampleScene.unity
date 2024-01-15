@@ -216,6 +216,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 459980156}
+  - component: {fileID: 459980162}
   - component: {fileID: 459980158}
   - component: {fileID: 459980157}
   - component: {fileID: 459980161}
@@ -1668,6 +1669,21 @@ TilemapCollider2D:
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0
   m_UseDelaunayMesh: 0
+--- !u!114 &459980162
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 459980155}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 630cea04b3b5e194783ab6c95f4706f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mat:
+  - {fileID: 6200000, guid: 6636d43474f694948a55b15c0cc71757, type: 2}
+  - {fileID: 6200000, guid: 91eb279862fdb274baa5afa706427404, type: 2}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -2063,6 +2079,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RunSpeed: 5
   JumpPower: 10
+  PlayerInSlope: 0
   mat:
   - {fileID: 6200000, guid: 6636d43474f694948a55b15c0cc71757, type: 2}
   - {fileID: 6200000, guid: 3f69b3c51908a3d45b74dfef663f00e9, type: 2}
@@ -2145,9 +2162,9 @@ GameObject:
   - component: {fileID: 2055647928}
   - component: {fileID: 2055647927}
   - component: {fileID: 2055647929}
-  m_Layer: 8
+  m_Layer: 12
   m_Name: Spike
-  m_TagString: Enemy
+  m_TagString: Trap
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2355,9 +2372,9 @@ GameObject:
   - component: {fileID: 2090340293}
   - component: {fileID: 2090340296}
   - component: {fileID: 2090340292}
-  - component: {fileID: 2090340291}
   - component: {fileID: 2090340297}
   - component: {fileID: 2090340294}
+  - component: {fileID: 2090340298}
   m_Layer: 8
   m_Name: Enemy
   m_TagString: Enemy
@@ -2365,27 +2382,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!95 &2090340291
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2090340290}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 4b0f7482a5f1c2548931106d7c7057bb, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!212 &2090340292
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2493,6 +2489,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nextMove: 0
+  mat:
+  - {fileID: 6200000, guid: 3f69b3c51908a3d45b74dfef663f00e9, type: 2}
 --- !u!61 &2090340297
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2538,6 +2536,27 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.7, y: 0.7}
   m_EdgeRadius: 0.09
+--- !u!95 &2090340298
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2090340290}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 4b0f7482a5f1c2548931106d7c7057bb, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2109601934
 GameObject:
   m_ObjectHideFlags: 0
