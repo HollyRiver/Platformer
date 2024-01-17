@@ -30,17 +30,23 @@ public class PlayerMovement : MonoBehaviour
     float h;
     bool IsMoving;
     bool CantMoving;
+    bool IsAttack;
+    bool CanJumping;
     int dirc;
     float RightRayAngle;
     float LeftRayAngle;
+    Vector3 RespownPosition;
 
     // Other Class Import
-    Platform plat;
+    public Platform plat;
+    public GameManager GM;
 
     void Awake()
     {
         // Local Variables and Component Setting
-        plat = FindObjectOfType<Platform>();
+        // plat = FindObjectOfType<Platform>();
+        // GM = FindObjectOfType<GameManager>();
+        RespownPosition = transform.position;
         rigid = GetComponent<Rigidbody2D>();
         Model = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
@@ -49,6 +55,7 @@ public class PlayerMovement : MonoBehaviour
         IsMoving = false;
         CantMoving = false;
         PlayerInSlope = false;
+        IsAttack = false;
     }
 
     void FixedUpdate()
@@ -59,16 +66,33 @@ public class PlayerMovement : MonoBehaviour
             // Player Movement and Jumping Logic
             h = Input.GetAxisRaw("Horizontal");
 
-            if (Jump) {
+            if (!IsAttack) {
                 rigid.AddForce(Vector2.right * h, ForceMode2D.Impulse);
-                rigid.velocity = new Vector2(rigid.velocity.x, 0);  // 가속도 초기화
-                rigid.AddForce(new Vector2(0, JumpPower), ForceMode2D.Impulse);  // 점프 발생
-                PlayerInSlope = false;
-                Jump = false;
+
+                if (Jump) {
+                    rigid.velocity = new Vector2(rigid.velocity.x, 0);  // 가속도 초기화
+                    rigid.AddForce(new Vector2(0, JumpPower), ForceMode2D.Impulse);  // 점프 발생
+                    PlayerInSlope = false;
+                    Jump = false;
+                }
             }
 
             else {
+                anim.SetBool("IsJumping", true);
                 rigid.AddForce(Vector2.right * h, ForceMode2D.Impulse);
+
+                if (Jump) {
+                    rigid.velocity = new Vector2(rigid.velocity.x, 0);  // 가속도 초기화
+                    rigid.AddForce(new Vector2(0, JumpPower), ForceMode2D.Impulse);  // 점프 발생
+                    Jump = false;
+                    IsAttack = false;
+                }
+
+                else {
+                    rigid.velocity = new Vector2(rigid.velocity.x, 0);
+                    rigid.AddForce(new Vector2(0, 5), ForceMode2D.Impulse);
+                    IsAttack = false;
+                }
             }
 
             // MaxSpeed Exceed Logic
@@ -131,13 +155,11 @@ public class PlayerMovement : MonoBehaviour
                         
                         if (RayHitRightDiag.collider != null && RightRayAngle >= 155) {
                             // Debug.DrawRay(RayHitRightDiag.point, RayHitRightDiag.normal);
-                            Debug.Log(RightRayAngle);
                             PlayerInSlope = true;
                         }
 
                         else if (RayHitLeftDiag.collider != null && LeftRayAngle >= 155) {
                             // Debug.DrawRay(RayHitLeftDiag.point, RayHitLeftDiag.normal);
-                            Debug.Log(LeftRayAngle);
                             PlayerInSlope = true;
                         }
                     }
@@ -219,10 +241,14 @@ public class PlayerMovement : MonoBehaviour
             }
 
             // Player Jumping Logic
-            if (!anim.GetBool("IsFalling") && !anim.GetBool("IsJumping") && Input.GetButtonDown("Jump"))  // 땅에 있을 때 점프 버튼을 누르면
+            if ((!anim.GetBool("IsFalling") && !anim.GetBool("IsJumping") || CanJumping) && Input.GetButtonDown("Jump"))  // 땅에 있을 때 점프 버튼을 누르면
             {
                 Jump = true;  // 점프를 누름
                 anim.SetBool("IsJumping", true);
+
+                if (CanJumping) {
+                    CanJumping = false;
+                }
             }
         }
     }
@@ -244,10 +270,14 @@ public class PlayerMovement : MonoBehaviour
     void OnCollisionEnter2D(Collision2D other) {
         if (other.gameObject.CompareTag("Enemy") || other.gameObject.CompareTag("Trap")) {
             if (other.gameObject.CompareTag("Enemy") && transform.position.y > other.transform.position.y + 0.4f) {
+                IsAttack = true;
+                CanJump();  // 몬스터를 밟은 후 점프까지 유예시간 제공
                 OnAttack(other.transform, transform.position.x);  // 트랜스폼에서 컴포넌트를 추출할 수 있음...?
+                GM.PlayerScore += 10;
             }
             
-            else {
+            else  // 피격시 애니메이션, 또는 사망 애니메이션
+            {
                 gameObject.layer = 10;
                 anim.SetTrigger("Damaged");
                 OnDamaged();
@@ -255,8 +285,41 @@ public class PlayerMovement : MonoBehaviour
                 PushedOut(other.transform.position);
                 Invoke("OffDamaged", 2);
                 Invoke("CanMove", 1);
+                GM.HealthDown();
             }
         }
+    }
+
+    void OnTriggerEnter2D(Collider2D other) {
+        if (other.CompareTag("Coin")) {
+            bool IsBronze = other.gameObject.name.Contains("Bronze");
+            bool IsSilver = other.gameObject.name.Contains("Silver");
+            bool IsGold = other.gameObject.name.Contains("Gold");
+
+            if (IsBronze)
+                GM.PlayerScore += 1;
+            
+            if (IsSilver)
+                GM.PlayerScore += 10;
+            
+            if (IsGold)
+                GM.PlayerScore += 100;
+
+            other.gameObject.SetActive(false);
+        }
+
+        else if (other.CompareTag("Finish")) {
+            GM.NextStage();
+        }
+    }
+
+    void CanJump() {
+        CanJumping = true;
+        Invoke("CantJump", 0.1f);  // 유예시간 : 0.1초
+    }
+
+    void CantJump() {
+        CanJumping = false;
     }
 
     void OnAttack(Transform enemy, float PlayerPointX) {
@@ -265,7 +328,6 @@ public class PlayerMovement : MonoBehaviour
         anim.SetBool("IsFalling", false);
         anim.SetBool("IsJumping", false);  // 다시 점프가 가능함
         Invoke("JumpBlock", 0.05f);
-        rigid.AddForce(Vector2.up*2, ForceMode2D.Impulse);
     }
 
     void JumpBlock() {
@@ -284,12 +346,12 @@ public class PlayerMovement : MonoBehaviour
     }
 
     void CantMove() {
-        PlayerHitBox.sharedMaterial = mat[1];
+        rigid.sharedMaterial = mat[1];
         CantMoving = true;
     }
 
     void CanMove() {
-        PlayerHitBox.sharedMaterial = mat[0];
+        rigid.sharedMaterial = mat[0];
         CantMoving = false;
     }
 
@@ -312,5 +374,35 @@ public class PlayerMovement : MonoBehaviour
         gameObject.layer = 9;
         Model.color = new Color32(255, 255, 255, 255);
         CancelInvoke();
+    }
+
+    void MatSwip() {
+        rigid.sharedMaterial = mat[0];
+    }
+
+    public void Respown() {
+        transform.position = RespownPosition;
+        gameObject.layer = 10;
+        OnDamaged();
+        anim.SetBool("IsFalling", false);
+        anim.SetBool("IsJumping", false);
+        anim.SetBool("IsRunning", false);
+        Invoke("OffDamaged", 2);
+    }
+
+    public void Reposition() {
+        transform.position = RespownPosition;
+        anim.SetBool("IsFalling", false);
+        anim.SetBool("IsJumping", false);
+        anim.SetBool("IsRunning", false);
+    }
+
+    public void Dead() {
+        CancelInvoke();
+        gameObject.layer = 10;
+        Model.color = new Color32(255, 255, 255, 255);
+        rigid.sharedMaterial = mat[2];
+        Invoke("MatSwip", 1);
+        // 모션 추가 필요
     }
 }

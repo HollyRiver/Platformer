@@ -7,9 +7,11 @@ public class EnemyMovement : MonoBehaviour
     Rigidbody2D rigid;
     Animator anim;
     SpriteRenderer spriteSetting;
+    AudioSource AudioSetting;
 
     public int nextMove;
     public PhysicsMaterial2D[] mat = new PhysicsMaterial2D[1];
+    public AudioClip[] aud = new AudioClip[2];
 
     int CompareX;
     bool IsDamaged;
@@ -19,6 +21,7 @@ public class EnemyMovement : MonoBehaviour
         rigid = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         spriteSetting = GetComponent<SpriteRenderer>();
+        AudioSetting = GetComponent<AudioSource>();
         IsDamaged = false;
         Think();  // 최초값 할당. -1, 0, 1
     }
@@ -79,14 +82,17 @@ public class EnemyMovement : MonoBehaviour
 
     public void OnDamaged(float PlayerPointX)
     {
+        gameObject.layer = 11;
+        rigid.sharedMaterial = mat[0];
         IsDamaged = true;
         spriteSetting.color = new Color32(255, 255, 255, 155);
-        rigid.sharedMaterial = mat[0];
-        gameObject.layer = 10;
-        anim.SetTrigger("DoDamaged");
-        CompareX = transform.position.x > PlayerPointX ? 1 : -1;
+        AudioSetting.clip = aud[1];  // bib
+        AudioSetting.Play();
 
-        rigid.AddForce(new Vector2(CompareX, 1)*2, ForceMode2D.Impulse);
+        anim.SetTrigger("DoDamaged");
+
+        CompareX = transform.position.x > PlayerPointX ? 1 : -1;
+        rigid.AddForce(new Vector2(CompareX, 1)*4, ForceMode2D.Impulse);
 
         Invoke("Pop", 1);
     }
@@ -97,6 +103,8 @@ public class EnemyMovement : MonoBehaviour
         spriteSetting.color = new Color32(255, 255, 255, 255);
         rigid.constraints = RigidbodyConstraints2D.FreezeAll;
         Invoke("Destroy", 0.25f);
+        AudioSetting.clip = aud[0];  // pop
+        AudioSetting.Play();
     }
     void Destroy()
     {
